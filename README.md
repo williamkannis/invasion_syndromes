@@ -133,9 +133,6 @@ file structure:
 │
 ├── Figures
 ├── HPC
-│   ├── 00_null_model_effect_size_function.R
-│   ├── 01_ses_batch.sh
-│   ├── 01_ses_batch.R 
 │   │── null_out*
 │   │── obs_out*
 │   │── ses_inputs
