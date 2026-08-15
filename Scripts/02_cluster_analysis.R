@@ -15,8 +15,7 @@
 rm(list = ls())
 
 # Directories
-beta_dir <- "Diversity Output Data"
-inv_dir <- "Analysis_data"
+beta_dir <- "Analysis_data"
 fig_dir <- "Figures"
 
 # Load packages
@@ -29,52 +28,58 @@ library(ggforce)
 
 # Load data
 lcbd_df <- readRDS(file.path(beta_dir,"delta_lcbd.rds"))
-inv_df <- readRDS(file.path(inv_dir,"origin_invaded.rds"))
+inv_df <- readRDS(file.path(beta_dir,"com_invaded.rds"))
 
 
 #  Prepare data ----------------------------------------------------------------
+
+# Select only sites with significant changes in at least one dimension
 lcbd_clst <- lcbd_df %>%
   column_to_rownames("COMID") %>%
-  dplyr::select(contains("_es")) %>%
   filter(if_any(everything(),~ abs(.x) >= 1.96))
 
 
-# Clustering -------------------------------------------------------------------
+# Cluster model selection  -----------------------------------------------------
 
 # Identify number of clusters via model selection
 BIC <- mclustBIC(lcbd_clst,G=1:20)
 plot(BIC)
 summary(BIC)
 
-## Export version of BIC Plot ##
+# BIC Plot for Figure s6.2
+png(
+  file.path(fig_dir,"figure_s6.2.png"),
+  width = 1800,
+  height = 1200
+  )
+par(cex = 2.5)
+plot(BIC)
+dev.off()
 
-# png(
-#   "figure/bic_plot.png",
-#   width = 1800,
-#   height = 1200
-#   )
-# par(cex = 2.5)
-# plot(BIC)
-# dev.off()
+# Clustering -------------------------------------------------------------------
 
 # Perform clustering based on model selection
 clst <- Mclust(lcbd_clst,x = BIC)
 summary(clst, parameters = TRUE)
+
+# Basic visualization
 plot(clst, what = "classification")
 abline(h = 1.96);abline(h = -1.96)
 abline(v= 0)
 
+# Full cluster plot - Figure s6.1
 png(
-  "Figure/clst_plot.png",
+  file.path(fig_dir,"figure_s6.1.png"),
   width = 1800,
   height = 1200
   )
 par(cex = 20)
 plot(clst, what = "classification",cex = 1.5)
 dev.off()
-mclust.options("classPlotColors")
+mclust.options("classPlotColors") # display colors in order to id syndromes
 
-# Cluster plots  ---------------------------------------------------------------
+
+# Cluster plots - Figure 5  ----------------------------------------------------
 
 # Combinations of dimensions to plot
 combo_list <- list(
@@ -151,13 +156,11 @@ lapply(combo_list, function(combo){
         fill = NA,
         linewidth = 2
       )
-      # legend.title = element_text(size = 16),
-      # legend.text = element_text(size = 14)
     )
   print(p)
 
   # Export file name
-  file_name <- paste0("pair_clst_",x_name,"_",y_name,".png")
+  file_name <- paste0("figure_5_",x_name,"_",y_name,".png")
 
   # Export
   ggsave(
@@ -178,6 +181,8 @@ diff_cluster_data <- data.frame(
   COMID = names(clst$classification), # create dataframe for comid and clusters
   classification = clst$classification
   ) %>%
+
+  # Update cluster names to those in figure 6
   mutate(
     cluster = case_when(
       classification == 5 ~ 1,
@@ -190,63 +195,61 @@ diff_cluster_data <- data.frame(
     )
   )
 
+raw_data <- lcbd_clst %>%
+  rownames_to_column("COMID") %>%
+  right_join(diff_cluster_data)
 
-raw_data <- lcbd_clst # Create datframe with raw delta lcbd
-raw_data$COMID <- row.names(raw_data)  # create column for COMID
-raw_data <- diff_cluster_data %>% left_join(raw_data)  # comine cluster and raw data
-
-# Update cluster names
-
-# Significant cat function
+# Significant cat function. Coarsens LCBD values to sig levels
 es_sig <-function(x) {
-  ifelse(x >= 1.96, 3,
-         ifelse(x >= 1.64,2,
-                ifelse(x >= 0,1,
-                       ifelse(x > -1.64,-1,
-                              ifelse(x > -1.96,-2,-3)))))
+  ifelse(
+    x >= 1.96,
+    3,
+    ifelse(
+      x >= 1.64,
+      2,
+      ifelse(
+        x >= 0,
+        1,
+        ifelse(
+          x > -1.64,
+          -1,
+          ifelse(
+            x > -1.96,
+            -2,
+            -3)
+          )
+        )
+      )
+    )
 
 }
 
 
-# # Mean delta LCBD
-# cluster_means_raw <- raw_data %>%
-#   group_by(cluster) %>%
-#   summarise(
-#     across(-COMID,mean,na.rm=T),
-#     n_sites = n()
-#     ) %>%
-#   mutate(across(everything(), es_sig))
-
-
-# Median delta LCBD (used)
+# Coarsened sig levels based on median delta LCBD ES - used for effects sizes
+# figure 6.
 cluster_med_raw <- raw_data %>%
   group_by(cluster) %>%
   summarise(
     across(-COMID,median,na.rm=T),
     n_sites = n()
   ) %>%
-  mutate(across(-n_sites, es_sig)) %>%
+  mutate(across(-c(n_sites,cluster), es_sig)) %>%
   ungroup()
-
-
-
 
 
 # Cluster species richness summary  --------------------------------------------
 
-
 # Calculate taxonomic richness values for each cluster
 comid_richness <- inv_df %>%
+  mutate(COMID = as.character(COMID)) %>%
   left_join(diff_cluster_data) %>%
   mutate(
     cluster = case_when(
       is.na(cluster) ~ 7,
       T~cluster
-    )
+    ),
+    cluster = as.factor(cluster)
   )
-  filter(!is.na(cluster))
-comid_richness$cluster <- as.factor(comid_richness$cluster)
-
 
 # Cluster summary
 comid_richness %>%
@@ -259,10 +262,7 @@ comid_richness %>%
     med_nonnative_prop = median(prop_nonnative))
 
 
-# Cluster richness plots  ------------------------------------------------------
-
-
-
+# Cluster richness plots - Figure 6 barplots------------------------------------
 for(i in 1:7){
   plot_data <- comid_richness %>%
     filter(cluster == i) %>%
@@ -270,7 +270,7 @@ for(i in 1:7){
       N = Native_rich,
       NN = Nonnative_rich
     ) %>%
-    select(-prop_nonnative,-cluster) %>%
+    select(-prop_nonnative,-cluster,-classification) %>%
     pivot_longer(!COMID)
 
   p<-ggplot(plot_data,aes(x= name,y=value,fill=name))+
@@ -289,9 +289,9 @@ for(i in 1:7){
 
   # print(p)
 
-  plot_file <- paste0("figure/rich_plot_s",i,".png")
+  plot_file <- paste0("figure_6_rich_s",i,".png")
   ggsave(
-    plot_file,
+    file.path(fig_dir,plot_file),
     p,
     width = 10,
     height = 10,
@@ -333,7 +333,7 @@ nn_summary <- tbl_data %>%
   arrange(cluster,desc(prop_sites))
 
 # Native occurrences per cluster
-nat_summary_native <- tbl_data %>%
+nat_summary <- tbl_data %>%
   filter(Native8 == T) %>%
   group_by(cluster,Scientific_Name) %>%
   summarise(n_sites = n())%>%
@@ -343,8 +343,8 @@ nat_summary_native <- tbl_data %>%
   arrange(cluster,desc(prop_sites))
 
 ## Export ##
-write.csv(nn_summary, "figure/cluster_nonnative_species.csv")
-write.csv(nat_summary, "figure/cluster_native_species.csv")
+write.csv(nn_summary, file.path(fig_dir,"table_s7_nonnative.csv"))
+write.csv(nat_summary, file.path(fig_dir,"table_s7_native.csv"))
 
 
 
