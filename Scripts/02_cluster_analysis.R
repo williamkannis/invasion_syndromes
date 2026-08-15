@@ -8,7 +8,10 @@
 
 # Created: 04/28/2026
 
-# Description:
+# Description: Performs model based clustering to identify invasion
+# syndromes based on shared changes in multidimensional LCBD effect sizes.
+# Filters sites so only those with at least one dimension with a significant
+# change are included in cluster analyses. Creates summary tables and plots.
 
 
 # House keeping ----------------------------------------------------------------
@@ -345,6 +348,4 @@ nat_summary <- tbl_data %>%
 ## Export ##
 write.csv(nn_summary, file.path(fig_dir,"table_s7_nonnative.csv"))
 write.csv(nat_summary, file.path(fig_dir,"table_s7_native.csv"))
-
-
 

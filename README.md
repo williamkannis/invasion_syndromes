@@ -103,7 +103,7 @@ analyses.
 The combined effect size data for delta LCBD can be downloaded from ```delta_lcbd.rds``` 
 at the [Zenodo repository](https://doi.org/10.5281/zenodo.16949657) and unzipped 
 into the ```Analysis_data/``` directory. These data can be used to replicate
-clustering analysis.
+clustering analysis in ```02_cluster_analysis.R```.
 
 Intermediate data, **NOT required** for replicating data using the full
 workflows of route 1 or route 2.
@@ -180,7 +180,7 @@ R and shell scripts can be found in ```HPC``` directory and are listed in order 
 workflow. Users starting here do not need to download ```ses_out.zip```.
 
 <ins>NOTE:</ins> Completing this part of workflow requires HPC cluster
-with Slurm interface and downlaoding large files (```null_out.zip```). If this 
+with Slurm interface and downloading large files (```null_out.zip```). If this 
 is not possible, skip to [Route 2](#route-2-conduct-analayses-using-local-machine).
 
 ### 1. Upload entire ```HPC``` directory to high performance cluster storage.
@@ -247,20 +247,28 @@ summarizing raw and effect size beta diversity values.
 * Plots for figure 4
 
 
-### 2. 
-**Script:** ```02```
+### 2. Perform clustering analysis to identify syndromes
+**Script:** ```02_cluster_analysis.R```
 
-<ins>Purpose:</ins> 
+<ins>Purpose:</ins> Performs model based clustering to identify invasion 
+syndromes based on shared changes in multidimensional LCBD effect sizes. Filters
+sites so only those with at least one dimension with a significant change are
+included in cluster analyses. Creates summary tables and plots.
 
 <ins>Outputs:</ins> 
 
-* 
+* Clustering summary statistics
+* Plots for figure 5
+* Summary statistics for figure 6
+* Plots for figure 6
+* Plots for appendix 6
+* Tables for appendix 7 - *Requires unprovided raw community data*
 
 
 # Figures
 Contains raw R plots and .csv tables used to create the figures and tables in 
 the main manuscript and appendices. Most figures were edited in Adobe Illustrator
-for aesthetic purposes, and we inlcuded Illustrator files as well.
+for aesthetic purposes, and we included Illustrator files as well.
 
 # Diversity Input Data
 We are not able to publicly provide all the data necessary to replicate the 
