@@ -1,5 +1,4 @@
 # Source code for *Invasion syndromes based on shared changes in multidimensional beta diversity change*
-## Contact information and citation
 
 # Anonymous peer review version
 
