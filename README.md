@@ -67,8 +67,8 @@ workflow used in this manuscript can be found
 
 # Data
 
-## Shared data
-The data below can be found at the manuscript's [Zenodo repository](https://doi.org/10.5281/zenodo.16949657):
+The data below can be found at the manuscript's 
+[Zenodo repository](https://doi.org/10.5281/zenodo.16949657):
 
 ### Observed diversity data
 Observed alpha and beta diversity data can be downloaded from ```obs_out.zip``` 
@@ -99,33 +99,25 @@ analyses.
 
 **Required** only for route 2.
 
-### Diversity Output Data
-The combined observed and summarized effect size data for native alpha, native 
-LCBD, and delta LCBD can be downloaded from ```Diversity Output Data.zip``` 
-at the [Zenodo repository](https://doi.org/10.5281/zenodo.16949657) and unzipped into the working directory. These 
-data can be used to replicate the spatial, redundancy, and variance 
-partitioning analyses. Contains both response and explanatory variables.
+### Delta lcbd effects sizes
+The combined effect size data for delta LCBD can be downloaded from ```delta_lcbd.rds``` 
+at the [Zenodo repository](https://doi.org/10.5281/zenodo.16949657) and unzipped 
+into the ```Analysis_data/``` directory. These data can be used to replicate
+clustering analysis.
 
 Intermediate data, **NOT required** for replicating data using the full
 workflows of route 1 or route 2.
 
+### Community invadedness
+We summarized the native and nonnative species richness across communities for each
+syndrome. We used the raw community data to estimate the total species 
+richness, native species richness, and the richness of nonnative species. 
+These data can be downloaded from ```com_invaded.rds``` at the 
+[Zenodo repository](https://doi.org/10.5281/zenodo.16949657) and unzipped 
+into ```Analysis_data/```.
 
+**Required** for both route 1 and route 2 to recreate figure 6.
 
-## Publically available data
-
-#UPDATE
-As part of our analyses, we used data that were publicly available from other
-sources. Below we briefly describe these data and provide links to the data's
-location. 
-
-All below files are **Required** for the full replication of both route 1 and 
-route 2. Except where otherwise noted.
-
-
-
-
-
-Only **Required** for replication of spatial plots.
 
 ## File directories
 Download the entire repository. Then download required data from 
@@ -136,11 +128,9 @@ file structure:
 #UPDATE
 ```bash
 ├── Analysis_data
-│   │── FreshwaterFishing_RecreationDemand.csv*
-│   │── huc6.shp*
-│   │── origin_invaded.rds*
-│   └── predicted_alteration_region_model.csv*
-├── Diversity Output Data*
+│   │── delta_lcbd*
+│   └── com_invaded.rds*
+│
 ├── Figures
 ├── HPC
 │   ├── 00_null_model_effect_size_function.R
@@ -252,12 +242,9 @@ summarizing raw and effect size beta diversity values.
 
 <ins>Outputs:</ins> 
 
-* [```delta_lcbd.rds```](#diversity-output-data), 
-* [```native_lcbd.rds```](#diversity-output-data), 
-* [```native_alpha.rds```](#diversity-output-data)
+* [```delta_lcbd.rds```](#delta-lcbd-effects-sizes), 
 * Summary statistics
 * Plots for figure 4
-* Plots for Appendix 6 CHECK TO MAKE SURE
 
 
 ### 2. 
