@@ -15,9 +15,9 @@
 rm(list = ls())
 
 # Directories
-beta_dir <- "~/Documents/School/PhD/Analysis/beta diversity/final_outputs"
-raw_dir <- "raw_data"
-fig_dir <- "figure"
+beta_dir <- "Diversity Output Data"
+inv_dir <- "Analysis_data"
+fig_dir <- "Figures"
 
 # Load packages
 library(dplyr)
@@ -28,10 +28,8 @@ library(ggplot2)
 library(ggforce)
 
 # Load data
-lcbd_df <-
-  readRDS(file.path(beta_dir,"delta_lcbd.rds"))
-com_raw_study <-
-  readRDS(file.path(raw_dir,"raw_community_diversity_input.rds"))
+lcbd_df <- readRDS(file.path(beta_dir,"delta_lcbd.rds"))
+inv_df <- readRDS(file.path(inv_dir,"origin_invaded.rds"))
 
 
 #  Prepare data ----------------------------------------------------------------
@@ -232,78 +230,13 @@ cluster_med_raw <- raw_data %>%
 
 
 
-# Cluster Species occurrences summary ------------------------------------------
 
-# Format raw species data
-com_raw_study$COMID <- as.character(com_raw_study$COMID)  # change COMID to character
-com_raw_study <- com_raw_study %>%
-  left_join(diff_cluster_data) %>%  # join species data to cluter data
-  mutate(
-    cluster = case_when(
-      is.na(cluster) ~ 7,
-      T~cluster
-    )
-  )
-  filter(!is.na(cluster))
-
-# Nonnaitve occurances per cluster
-sp_summary_all <- com_raw_study %>%   # summarize by cluster
-  filter(Native8 == F) %>%
-  group_by(Scientific_Name) %>%
-  summarise(n_sites = n())
-
-sp_summary <- com_raw_study %>%   # summarize by cluster
-  filter(Native8 == F) %>%
-  group_by(cluster,Scientific_Name) %>%
-  summarise(n_sites = n())
-n_sites <- com_raw_study %>%  # add number of sites
-  group_by(cluster) %>%
-  summarise(tot_sites = n_distinct(COMID))
-sp_summary <- sp_summary %>%   # calculate proprotion of sites occupied
-  left_join(n_sites) %>%
-  mutate(prop_sites = n_sites/tot_sites) %>%
-  dplyr::select(-tot_sites) %>%
-  arrange(cluster,desc(prop_sites))
-
-# Native occurances per cluster
-sp_summary_native_all <- com_raw_study %>% # summarize by cluster
-  filter(Native8 == T) %>%
-  group_by(Scientific_Name) %>%
-  summarise(n_sites = n())
-sp_summary_native <- com_raw_study %>% # summarize by cluster
-  filter(Native8 == T) %>%
-  group_by(cluster,Scientific_Name) %>%
-  summarise(n_sites = n())
-
-sp_summary_native <- sp_summary_native %>%  # calculate proprotion of sites occupied
-  left_join(n_sites) %>%
-  mutate(prop_sites = n_sites/tot_sites) %>%
-  dplyr::select(-tot_sites) %>%
-  arrange(cluster,desc(prop_sites))
-
-# ## Export ##
-write.csv(sp_summary, "figure/cluster_nonnative_species.csv")
-write.csv(sp_summary_native, "figure/cluster_native_species.csv")
 
 # Cluster species richness summary  --------------------------------------------
 
-# MAKE THIS SCRIPT IN DIERISTY INPUT. USE IT TO MAKE FILE OF RICHNESS AND INVADEDNESS
 
-# Calculate taxonomic richness values for each site
-
-comid_richness <- com_raw_study %>%
-  group_by(COMID,Native8) %>%
-  summarise(richness = n_distinct(Scientific_Name)) %>%
-  pivot_wider(
-    names_from = Native8,
-    values_from = richness,
-    values_fill = 0
-    ) %>%
-  rename(
-    Native_rich = "TRUE",
-    Nonnative_rich = "FALSE"
-    ) %>%  # rename columes to reflect native/nonnative richness
-  mutate(prop_nonnative = Nonnative_rich/(Native_rich+Nonnative_rich)) %>%
+# Calculate taxonomic richness values for each cluster
+comid_richness <- inv_df %>%
   left_join(diff_cluster_data) %>%
   mutate(
     cluster = case_when(
@@ -315,7 +248,8 @@ comid_richness <- com_raw_study %>%
 comid_richness$cluster <- as.factor(comid_richness$cluster)
 
 
-rich_sum <- comid_richness %>%
+# Cluster summary
+comid_richness %>%
   group_by(cluster) %>%
   summarise(mean_native_rich = mean(Native_rich),
     med_native_rich = median(Native_rich),
@@ -328,7 +262,7 @@ rich_sum <- comid_richness %>%
 # Cluster richness plots  ------------------------------------------------------
 
 
-library(ggplot2)
+
 for(i in 1:7){
   plot_data <- comid_richness %>%
     filter(cluster == i) %>%
@@ -365,5 +299,52 @@ for(i in 1:7){
     )
 
 }
+
+# Syndrome species occurrences summary -----------------------------------------
+# Tables in appendix 7
+
+# !! requires raw community data - not provided !!
+com_df <- readRDS("Diversity Input Data/raw_community_diversity_input.rds")
+
+# Format raw species data
+com_df$COMID <- as.character(com_df$COMID)
+tbl_data <- com_df %>%
+  left_join(diff_cluster_data) %>%
+  mutate(
+    cluster = case_when(
+      is.na(cluster) ~ 7,
+      T~cluster
+    )
+  )
+
+# total sites per cluster
+n_sites <- tbl_data %>%
+  group_by(cluster) %>%
+  summarise(tot_sites = n_distinct(COMID))
+
+# Nonnative occurrences per cluster
+nn_summary <- tbl_data %>%
+  filter(Native8 == F) %>%
+  group_by(cluster,Scientific_Name) %>%
+  summarise(n_sites = n()) %>%
+  left_join(n_sites) %>%
+  mutate(prop_sites = n_sites/tot_sites) %>%
+  dplyr::select(-tot_sites) %>%
+  arrange(cluster,desc(prop_sites))
+
+# Native occurrences per cluster
+nat_summary_native <- tbl_data %>%
+  filter(Native8 == T) %>%
+  group_by(cluster,Scientific_Name) %>%
+  summarise(n_sites = n())%>%
+  left_join(n_sites) %>%
+  mutate(prop_sites = n_sites/tot_sites) %>%
+  dplyr::select(-tot_sites) %>%
+  arrange(cluster,desc(prop_sites))
+
+## Export ##
+write.csv(nn_summary, "figure/cluster_nonnative_species.csv")
+write.csv(nat_summary, "figure/cluster_native_species.csv")
+
 
 
