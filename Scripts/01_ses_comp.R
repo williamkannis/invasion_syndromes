@@ -18,8 +18,8 @@
 rm(list=ls())
 
 # Directories
-out_dir <- "HPC copy/ses_outputs"
-obs_dir <- "HPC copy/obs_out"
+out_dir <- "HPC/ses_outputs"
+obs_dir <- "HPC/obs_out"
 export_dir <- "Analysis_data"
 fig_dir <- "Figures"
 
