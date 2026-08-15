@@ -357,7 +357,7 @@ lapply(1:2,function(i){
   ggsave(
     filename = file.path(fig_dir,es_name),
     plot = es_box,
-    width = 6.6,
+    width = 10,
     height = 6,
     dpi = 600
   )
