@@ -39,6 +39,7 @@ inv_df <- readRDS(file.path(beta_dir,"com_invaded.rds"))
 # Select only sites with significant changes in at least one dimension
 lcbd_clst <- lcbd_df %>%
   column_to_rownames("COMID") %>%
+  select(contains("_es")) %>%
   filter(if_any(everything(),~ abs(.x) >= 1.96))
 
 

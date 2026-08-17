@@ -130,7 +130,7 @@ analysis_list <-out_list["_d_lcbd"]
 final_list <-lapply(analysis_list, function (x) {
 
   # select observed and ES or SES
-  sub.vec <- "empirical_es"
+  sub.vec <-c("obs", "empirical_es")
   ls <- x[sub.vec]
 
   # Add ses and es suffixes to column names
