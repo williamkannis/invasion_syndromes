@@ -4,7 +4,7 @@
 
 Code and data for reproducing the analyses presented in:
 
-> Author et al. (YEAR). Syndromes of multidimensional beta diversity change in 
+> Author et al. (YEAR). Syndromes of multidimensional beta diversity change in
 invaded metacommunities.[Journal, DOI]
 
 This repository contains the R code and data products required to
