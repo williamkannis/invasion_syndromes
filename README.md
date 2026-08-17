@@ -99,8 +99,9 @@ analyses.
 **Required** only for route 2.
 
 ### Delta lcbd effects sizes
-The combined effect size data for delta LCBD can be downloaded from ```delta_lcbd.rds``` 
-at the [Zenodo repository](https://doi.org/10.5281/zenodo.16949657) and unzipped 
+The combined observed and effect size data for delta LCBD can be downloaded 
+from ```delta_lcbd.rds``` at the 
+[Zenodo repository](https://doi.org/10.5281/zenodo.16949657) and unzipped 
 into the ```Analysis_data/``` directory. These data can be used to replicate
 clustering analysis in ```02_cluster_analysis.R```.
 
