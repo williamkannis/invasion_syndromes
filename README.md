@@ -1,11 +1,11 @@
-# Source code for *Invasion syndromes based on shared changes in multidimensional beta diversity change*
+# Source code for *Syndromes of multifaceted beta diversity change in invaded metacommunities*
 
 # Anonymous peer review version
 
 Code and data for reproducing the analyses presented in:
 
-> Author et al. (YEAR). Invasion syndromes based on shared changes in 
-multidimensional beta diversity change.[Journal, DOI]
+> Author et al. (YEAR). Syndromes of multidimensional beta diversity change in 
+invaded metacommunities.[Journal, DOI]
 
 This repository contains the R code and data products required to
 reproduce the analyses, figures, and tables presented in the manuscript.
@@ -27,11 +27,11 @@ OrcID: 0009-0003-3541-8503
 
 If you use this code or data, please cite:
 
->BLANK. Invasion syndromes based on shared changes in 
-multidimensional beta diversity change. in review
+>BLANK. Syndromes of multidimensional beta diversity change in 
+invaded metacommunities. in review
 
->BLANK. Data and code for Invasion syndromes based on shared changes in 
-multidimensional beta diversity change.[citation / DOI]
+>BLANK. Data and code for Syndromes of multidimensional beta diversity change in 
+invaded metacommunities.[citation / DOI]
 
 and if you adapt the null model workflow:
 
