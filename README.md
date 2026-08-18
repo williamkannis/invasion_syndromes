@@ -125,7 +125,6 @@ Download the entire repository. Then download required data from
 [here](#publically-available-data), and unzip into the following 
 file structure:
 
-#UPDATE
 ```bash
 ├── Analysis_data
 │   │── delta_lcbd*
