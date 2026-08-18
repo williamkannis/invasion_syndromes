@@ -27,7 +27,7 @@ library(tibble)
 library(mclust)
 library(tidyr)
 library(ggplot2)
-library(ggforce)
+
 
 # Load data
 lcbd_df <- readRDS(file.path(beta_dir,"delta_lcbd.rds"))
