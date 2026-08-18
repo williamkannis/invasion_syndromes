@@ -141,7 +141,7 @@ file structure:
 └── Scripts
 
 
-(*) directories or files downloaded from data sources other than current repository
+(*) directories or files downloaded from Zenodo
 ```
 
 <ins>NOTE:</ins> When downloading data from the [Zenodo repository](https://doi.org/10.5281/zenodo.16949657), the .zip 
@@ -153,21 +153,18 @@ before creating new file structures.
 ## Required Software
 
 **R version**: 4.5.0
-#UPDATE
 
 R packages
 
 * ```'DescTools'``` version: 0.99.60
-* ```'dplyr'``` version: 1.1.4
+* ```'dplyr'``` version: 1.1.4
 * ```'ggplot2'``` version: 4.0.2
 * ```'matrixStats'``` version: 1.5.0
+* ```'mclust'``` version: 6.1.1
 * ```'parallel'``` version: 4.5.0
 * ```'purrr'``` version: 1.1.0
-* ```'sf'``` version: 1.0.20
-* ```'StreamCatTools'``` version: 0.10.0
 * ```'tibble'``` version: 3.2.1
 * ```'tidyr'``` version: 1.3.1
-* ```'vegan'``` version: 2.6.10
 * ```'VGAM'```  version: 1.1.14
 
 
